@@ -5,6 +5,7 @@ using System.Text;
 using HtmlAgilityPack;
 using System.Text.RegularExpressions;
 using System.Web;
+using System.IO;
 
 namespace HTMLFetchAndParse
 {
@@ -58,11 +59,11 @@ namespace HTMLFetchAndParse
         }
 
 
-        public ICollection<String> ParseHtmlColloctionNodeAttribute(string content, string xpath, string attribute, bool isString = false, bool isHtml = false)
+        public ICollection<String> ParseHtmlColloctionNodeAttribute(string content, string xpath, string attribute, bool isPlainString = false, bool isHtml = false)
         {
             List<String> lists = new List<string>();
             HtmlDocument doc = new HtmlDocument();
-            if (isString == false)
+            if (isPlainString == false)
                 if (isHtml == false)
                     doc.Load(content);
                 else
@@ -113,10 +114,18 @@ namespace HTMLFetchAndParse
             return lists;
         }
 
-        public string ParsePattern(string file, string pattern)
+        public string ParsePattern(string file, string pattern, bool isPath = true)
         {
 
-            throw new NotImplementedException();
+            if (isPath)
+                file = File.ReadAllText(file);
+
+            Match matche = Regex.Match(file.Trim(), pattern, RegexOptions.IgnoreCase);
+            if (matche.Success)
+            {
+                return matche.Groups[1].Value;
+            }
+            return String.Empty;
         }
 
         private string ConvertToHtml(string str)
@@ -150,4 +159,4 @@ namespace HTMLFetchAndParse
             return null;
         }
     }
-    }
+}

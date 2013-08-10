@@ -12,14 +12,14 @@ namespace HTMLFetchAndParse
     {
 
         //for load page
-        HttpWebRequest myHttpWebRequest;
-        HttpWebResponse myHttpWebResponse;
+        public HttpWebRequest myHttpWebRequest;
+        public HttpWebResponse myHttpWebResponse;
         public CookieContainer Cookies { set; get; }
         public String UserAgent { set; get; }
 
         public HTMLFetcher()
         {
-            Cookies = new CookieContainer();
+            Cookies = new CookieContainer(1000, 100, 4096);
             UserAgent = "Mozilla/5.0 (Windows NT 5.1; rv:7.0.1) Gecko/20100101 Firefox/7.0.1";
         }
 
@@ -144,9 +144,10 @@ namespace HTMLFetchAndParse
 
                 myHttpWebRequest.Method = "POST";
                 myHttpWebRequest.KeepAlive = true;
-                myHttpWebRequest.ContentType = "application/x-www-form-urlencoded";
-                myHttpWebRequest.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,*//*;q=0.8";
+                myHttpWebRequest.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
+                myHttpWebRequest.Accept = "application/json, text/javascript, */*; q=0.01";
                 myHttpWebRequest.UserAgent = UserAgent;
+                myHttpWebRequest.ServicePoint.Expect100Continue = false;
 
                 using (var requestStream = myHttpWebRequest.GetRequestStream())
                 using (var writer = new StreamWriter(requestStream))
