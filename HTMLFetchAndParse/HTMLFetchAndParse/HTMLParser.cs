@@ -11,10 +11,10 @@ namespace HTMLFetchAndParse
 {
     public class HTMLParser
     {
-        public string ParseHtmlSingleNodeAtrrib(string p, string xpath, string attribute, bool isString = false)
+        public string ParseHtmlSingleNodeAtrrib(string p, string xpath, string attribute, bool isPureContent = false)
         {
             HtmlDocument doc = new HtmlDocument();
-            if (isString == false)
+            if (isPureContent == false)
                 doc.Load(p);
             else
                 doc.LoadHtml(ConvertToHtml(p));

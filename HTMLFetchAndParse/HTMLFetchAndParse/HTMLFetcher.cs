@@ -16,6 +16,7 @@ namespace HTMLFetchAndParse
         public HttpWebResponse myHttpWebResponse;
         public CookieContainer Cookies { set; get; }
         public String UserAgent { set; get; }
+        public String Referer { set; get; }
 
         public HTMLFetcher()
         {
@@ -30,10 +31,10 @@ namespace HTMLFetchAndParse
             foreach (var cookie in cookies)
             {
                 var datas = cookie.Trim().Split(new char[] { '=' }, 2);
-                cookieCollection.Add(new Cookie(datas[0], datas[1]));
+                cookieCollection.Add(new Cookie(datas[0], datas[1], "/", domain));
             }
-            Cookies.Add(new Uri(domain), cookieCollection); 
-            
+            Cookies.Add(cookieCollection);
+
         }
         public void LoadPage(string uri, string filename, string encodingName)
         {
@@ -46,7 +47,8 @@ namespace HTMLFetchAndParse
                 myHttpWebRequest.ContentType = "application/x-www-form-urlencoded";
                 myHttpWebRequest.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,*//*;q=0.8";
                 myHttpWebRequest.UserAgent = UserAgent;
-
+                myHttpWebRequest.AllowAutoRedirect = true;
+                myHttpWebRequest.Referer = Referer;
 
                 myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
                 using (var myResponseStream = myHttpWebResponse.GetResponseStream())
@@ -66,11 +68,14 @@ namespace HTMLFetchAndParse
                 Console.WriteLine("Exception Occurs: " + e.Message);
                 Console.WriteLine("Uri : " + uri);
 
-//                Thread.Sleep(1200000);
+                //                Thread.Sleep(1200000);
+                Thread.Sleep(300000);
 
                 myHttpWebRequest = (HttpWebRequest)WebRequest.Create(new Uri(uri));
                 myHttpWebRequest.CookieContainer = Cookies;
                 myHttpWebRequest.UserAgent = UserAgent;
+                myHttpWebRequest.AllowAutoRedirect = true;
+                myHttpWebRequest.Referer = Referer;
 
                 myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
                 using (var myResponseStream = myHttpWebResponse.GetResponseStream())
@@ -79,12 +84,14 @@ namespace HTMLFetchAndParse
                     var myResponseResult = myResponseReader.ReadToEnd();
                     //Console.WriteLine(myResponseResult);
                     StreamWriter sw = new StreamWriter(File.Open(filename, FileMode.Create), Encoding.GetEncoding("utf-8"));
-                    sw.Write(myResponseResult); 
+                    sw.Write(myResponseResult);
                     sw.Close();
                 }
                 myHttpWebResponse.Close();
             }
         }
+
+        
 
         public String LoadPage(string uri, string encodingName)
         {
@@ -93,14 +100,20 @@ namespace HTMLFetchAndParse
             {
                 myHttpWebRequest = (HttpWebRequest)WebRequest.Create(new Uri(uri));
                 myHttpWebRequest.CookieContainer = Cookies;
-
+                myHttpWebRequest.AllowAutoRedirect = true;
 
                 myHttpWebRequest.ContentType = "application/x-www-form-urlencoded";
-                myHttpWebRequest.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,*//*;q=0.8";
+                myHttpWebRequest.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
                 myHttpWebRequest.UserAgent = UserAgent;
-
-
+                myHttpWebRequest.Referer = Referer;
+              
                 myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
+                //if (myHttpWebResponse.StatusCode == HttpStatusCode.Redirect ||
+                //    myHttpWebResponse.StatusCode == HttpStatusCode.MovedPermanently)
+                //{
+           
+                //}
+
                 using (var myResponseStream = myHttpWebResponse.GetResponseStream())
                 using (var myResponseReader = new StreamReader(myResponseStream, Encoding.GetEncoding(encodingName)))
                 {
@@ -118,10 +131,12 @@ namespace HTMLFetchAndParse
                 Console.WriteLine("Uri : " + uri);
 
                 //                Thread.Sleep(1200000);
-
+                Thread.Sleep(300000);
                 myHttpWebRequest = (HttpWebRequest)WebRequest.Create(new Uri(uri));
                 myHttpWebRequest.CookieContainer = Cookies;
                 myHttpWebRequest.UserAgent = UserAgent;
+                myHttpWebRequest.Referer = Referer;
+                myHttpWebRequest.AllowAutoRedirect = true;
 
                 myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
                 using (var myResponseStream = myHttpWebResponse.GetResponseStream())
@@ -147,7 +162,9 @@ namespace HTMLFetchAndParse
                 myHttpWebRequest.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
                 myHttpWebRequest.Accept = "application/json, text/javascript, */*; q=0.01";
                 myHttpWebRequest.UserAgent = UserAgent;
+           //     myHttpWebRequest.Referer = Referer;
                 myHttpWebRequest.ServicePoint.Expect100Continue = false;
+                myHttpWebRequest.AllowAutoRedirect = true;
 
                 using (var requestStream = myHttpWebRequest.GetRequestStream())
                 using (var writer = new StreamWriter(requestStream))
@@ -172,16 +189,19 @@ namespace HTMLFetchAndParse
 
                 Console.WriteLine("Exception Occurs: " + e.Message);
                 Console.WriteLine("Uri : " + uri);
+                Thread.Sleep(300000);
 
                 myHttpWebRequest = (HttpWebRequest)WebRequest.Create(new Uri(uri));
                 myHttpWebRequest.CookieContainer = Cookies;
                 myHttpWebRequest.UserAgent = UserAgent;
+                myHttpWebRequest.AllowAutoRedirect = true;
 
                 myHttpWebRequest.Method = "POST";
                 myHttpWebRequest.KeepAlive = true;
                 myHttpWebRequest.ContentType = "application/x-www-form-urlencoded";
                 myHttpWebRequest.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,*//*;q=0.8";
                 myHttpWebRequest.UserAgent = "Mozilla/5.0 (Windows NT 5.1; rv:7.0.1) Gecko/20100101 Firefox/7.0.1";
+                myHttpWebRequest.ServicePoint.Expect100Continue = false;
 
                 using (var requestStream = myHttpWebRequest.GetRequestStream())
                 using (var writer = new StreamWriter(requestStream))
@@ -198,6 +218,73 @@ namespace HTMLFetchAndParse
                     StreamWriter sw = new StreamWriter(File.Open(filename, FileMode.Create), Encoding.GetEncoding("utf-8"));
                     sw.Write(myResponseResult);
                     sw.Close();
+                }
+                myHttpWebResponse.Close();
+            }
+        }
+
+        public String PostPage(string uri, string data, string encodingName)
+        {
+            try
+            {
+                myHttpWebRequest = (HttpWebRequest)WebRequest.Create(new Uri(uri));
+                myHttpWebRequest.CookieContainer = Cookies;
+
+                myHttpWebRequest.Method = "POST";
+                myHttpWebRequest.KeepAlive = true;
+                myHttpWebRequest.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
+                myHttpWebRequest.Accept = "application/json, text/javascript, */*; q=0.01";
+                myHttpWebRequest.UserAgent = UserAgent;
+              //  myHttpWebRequest.Referer = Referer;
+                myHttpWebRequest.ServicePoint.Expect100Continue = false;
+                myHttpWebRequest.AllowAutoRedirect = true;
+
+                using (var requestStream = myHttpWebRequest.GetRequestStream())
+                using (var writer = new StreamWriter(requestStream))
+                {
+                    writer.Write(data);
+                }
+
+                myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
+                using (var myResponseStream = myHttpWebResponse.GetResponseStream())
+                using (var myResponseReader = new StreamReader(myResponseStream, Encoding.GetEncoding(encodingName)))
+                {
+                    return myResponseReader.ReadToEnd();
+
+                }
+                myHttpWebResponse.Close();
+            }
+            catch (Exception e)
+            {
+
+                Console.WriteLine("Exception Occurs: " + e.Message);
+                Console.WriteLine("Uri : " + uri);
+                Thread.Sleep(300000);
+
+                myHttpWebRequest = (HttpWebRequest)WebRequest.Create(new Uri(uri));
+                myHttpWebRequest.CookieContainer = Cookies;
+                myHttpWebRequest.UserAgent = UserAgent;
+                myHttpWebRequest.AllowAutoRedirect = true;
+
+                myHttpWebRequest.Method = "POST";
+                myHttpWebRequest.KeepAlive = true;
+                myHttpWebRequest.ContentType = "application/x-www-form-urlencoded";
+                myHttpWebRequest.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,*//*;q=0.8";
+                myHttpWebRequest.UserAgent = "Mozilla/5.0 (Windows NT 5.1; rv:7.0.1) Gecko/20100101 Firefox/7.0.1";
+                myHttpWebRequest.ServicePoint.Expect100Continue = false;
+
+                using (var requestStream = myHttpWebRequest.GetRequestStream())
+                using (var writer = new StreamWriter(requestStream))
+                {
+                    writer.Write(data);
+                }
+
+                myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
+                using (var myResponseStream = myHttpWebResponse.GetResponseStream())
+                using (var myResponseReader = new StreamReader(myResponseStream, Encoding.GetEncoding(encodingName)))
+                {
+                    return myResponseReader.ReadToEnd();
+
                 }
                 myHttpWebResponse.Close();
             }
