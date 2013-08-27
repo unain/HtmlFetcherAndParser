@@ -5,6 +5,7 @@ using System.Text;
 using System.Net;
 using System.IO;
 using System.Threading;
+using System.Net.NetworkInformation;
 
 namespace HTMLFetchAndParse
 {
@@ -17,6 +18,9 @@ namespace HTMLFetchAndParse
         public CookieContainer Cookies { set; get; }
         public String UserAgent { set; get; }
         public String Referer { set; get; }
+        Ping pingSender = new Ping();
+                
+
 
         public HTMLFetcher()
         {
@@ -66,10 +70,17 @@ namespace HTMLFetchAndParse
             {
 
                 Console.WriteLine("Exception Occurs: " + e.Message);
-                Console.WriteLine("Uri : " + uri);
+               // Console.WriteLine("Uri : " + uri);
 
                 //                Thread.Sleep(1200000);
-                Thread.Sleep(300000);
+                string datass = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+                byte[] buffer = Encoding.ASCII.GetBytes(datass);
+                int timeout = 120;
+                PingReply reply = pingSender.Send("8.8.8.8", timeout, buffer);
+                while (reply.Status != IPStatus.Success)
+                {
+                    reply = pingSender.Send("8.8.8.8", timeout, buffer);
+                }
 
                 myHttpWebRequest = (HttpWebRequest)WebRequest.Create(new Uri(uri));
                 myHttpWebRequest.CookieContainer = Cookies;
@@ -91,7 +102,68 @@ namespace HTMLFetchAndParse
             }
         }
 
-        
+        public void LoadImage(string uri, string filename)
+        {
+            try
+            {
+                myHttpWebRequest = (HttpWebRequest)WebRequest.Create(new Uri(uri));
+                myHttpWebRequest.CookieContainer = Cookies;
+
+
+                myHttpWebRequest.ContentType = "application/x-www-form-urlencoded";
+                myHttpWebRequest.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,*//*;q=0.8";
+                //myHttpWebRequest.UserAgent = UserAgent;
+                myHttpWebRequest.AllowAutoRedirect = true;
+                myHttpWebRequest.Referer = Referer;
+
+                myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
+                using (var myResponseStream = myHttpWebResponse.GetResponseStream())
+                using (var myResponseReader = new BinaryReader(myResponseStream))
+                {
+                    Byte[] lnByte = myResponseReader.ReadBytes(1 * 1024 * 1024 * 10);
+                    using (FileStream lxFS = new FileStream(filename, FileMode.Create))
+                    {
+                        lxFS.Write(lnByte, 0, lnByte.Length);
+                    }
+                }
+                myHttpWebResponse.Close();
+            }
+            catch (Exception e)
+            {
+
+                Console.WriteLine("Exception Occurs: " + e.Message);
+                // Console.WriteLine("Uri : " + uri);
+
+                //                Thread.Sleep(1200000);
+                string datass = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+                byte[] buffer = Encoding.ASCII.GetBytes(datass);
+                int timeout = 120;
+                PingReply reply = pingSender.Send("8.8.8.8", timeout, buffer);
+                while (reply.Status != IPStatus.Success)
+                {
+                    reply = pingSender.Send("8.8.8.8", timeout, buffer);
+                }
+
+                myHttpWebRequest = (HttpWebRequest)WebRequest.Create(new Uri(uri));
+                myHttpWebRequest.CookieContainer = Cookies;
+               // myHttpWebRequest.UserAgent = UserAgent;
+                myHttpWebRequest.AllowAutoRedirect = true;
+                myHttpWebRequest.Referer = Referer;
+
+                myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
+                using (var myResponseStream = myHttpWebResponse.GetResponseStream())
+                using (var myResponseReader = new BinaryReader(myResponseStream))
+                {
+                    Byte[] lnByte = myResponseReader.ReadBytes(1 * 1024 * 1024 * 10);
+                    using (FileStream lxFS = new FileStream(filename, FileMode.Create))
+                    {
+                        lxFS.Write(lnByte, 0, lnByte.Length);
+                    }
+                }
+                myHttpWebResponse.Close();
+            }
+        }
+
 
         public String LoadPage(string uri, string encodingName)
         {
@@ -128,10 +200,22 @@ namespace HTMLFetchAndParse
             {
 
                 Console.WriteLine("Exception Occurs: " + e.Message);
-                Console.WriteLine("Uri : " + uri);
+               // Console.WriteLine("Uri : " + uri);
+                
+                // Use the default Ttl value which is 128, 
+                // but change the fragmentation behavior.
 
-                //                Thread.Sleep(1200000);
-                Thread.Sleep(300000);
+                // Create a buffer of 32 bytes of data to be transmitted. 
+                string data = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+                byte[] buffer = Encoding.ASCII.GetBytes(data);
+                int timeout = 120;
+                PingReply reply = pingSender.Send("8.8.8.8", timeout, buffer);
+                while (reply.Status != IPStatus.Success)
+                {
+                    reply = pingSender.Send("8.8.8.8", timeout, buffer);
+                }
+
+
                 myHttpWebRequest = (HttpWebRequest)WebRequest.Create(new Uri(uri));
                 myHttpWebRequest.CookieContainer = Cookies;
                 myHttpWebRequest.UserAgent = UserAgent;
@@ -188,8 +272,15 @@ namespace HTMLFetchAndParse
             {
 
                 Console.WriteLine("Exception Occurs: " + e.Message);
-                Console.WriteLine("Uri : " + uri);
-                Thread.Sleep(300000);
+               // Console.WriteLine("Uri : " + uri);
+                string datass = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+                byte[] buffer = Encoding.ASCII.GetBytes(datass);
+                int timeout = 120;
+                PingReply reply = pingSender.Send("8.8.8.8", timeout, buffer);
+                while (reply.Status != IPStatus.Success)
+                {
+                    reply = pingSender.Send("8.8.8.8", timeout, buffer);
+                }
 
                 myHttpWebRequest = (HttpWebRequest)WebRequest.Create(new Uri(uri));
                 myHttpWebRequest.CookieContainer = Cookies;
@@ -258,8 +349,15 @@ namespace HTMLFetchAndParse
             {
 
                 Console.WriteLine("Exception Occurs: " + e.Message);
-                Console.WriteLine("Uri : " + uri);
-                Thread.Sleep(300000);
+             //   Console.WriteLine("Uri : " + uri);
+                string datass = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+                byte[] buffer = Encoding.ASCII.GetBytes(datass);
+                int timeout = 120;
+                PingReply reply = pingSender.Send("8.8.8.8", timeout, buffer);
+                while (reply.Status != IPStatus.Success)
+                {
+                    reply = pingSender.Send("8.8.8.8", timeout, buffer);
+                }
 
                 myHttpWebRequest = (HttpWebRequest)WebRequest.Create(new Uri(uri));
                 myHttpWebRequest.CookieContainer = Cookies;
