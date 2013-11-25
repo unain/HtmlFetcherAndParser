@@ -40,6 +40,18 @@ namespace HTMLFetchAndParse
             Cookies.Add(cookieCollection);
 
         }
+        public void AddCookie(String cookieString, String domain, String path)
+        {
+            var cookieCollection = new CookieCollection();
+            var cookies = cookieString.Trim().Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var cookie in cookies)
+            {
+                var datas = cookie.Trim().Split(new char[] { '=' }, 2);
+                cookieCollection.Add(new Cookie(datas[0], datas[1], path, domain));
+            }
+            Cookies.Add(cookieCollection);
+
+        }
         public void LoadPage(string uri, string filename, string encodingName)
         {
             try
@@ -233,6 +245,7 @@ namespace HTMLFetchAndParse
                 return myResponseResult;
             }
         }
+       
 
         public void PostPage(string uri, string data, string filename, string encodingName)
         {
