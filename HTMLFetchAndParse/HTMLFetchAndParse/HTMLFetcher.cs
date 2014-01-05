@@ -18,6 +18,9 @@ namespace HTMLFetchAndParse
         public CookieContainer Cookies { set; get; }
         public String UserAgent { set; get; }
         public String Referer { set; get; }
+        public String Origin { set; get; }
+        public String ContentType { set; get; }
+        public String AcceptEncoding { set; get; }
         Ping pingSender = new Ping();
                 
 
@@ -26,6 +29,8 @@ namespace HTMLFetchAndParse
         {
             Cookies = new CookieContainer(1000, 100, 4096);
             UserAgent = "Mozilla/5.0 (Windows NT 5.1; rv:7.0.1) Gecko/20100101 Firefox/7.0.1";
+            AcceptEncoding = "text/html,application/xhtml+xml,application/xml;q=0.9,*//*;q=0.8";
+            ContentType = "application/x-www-form-urlencoded; charset=utf-8";
         }
 
         public void AddCookie(String cookieString, String domain)
@@ -60,8 +65,8 @@ namespace HTMLFetchAndParse
                 myHttpWebRequest.CookieContainer = Cookies;
 
 
-                myHttpWebRequest.ContentType = "application/x-www-form-urlencoded";
-                myHttpWebRequest.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,*//*;q=0.8";
+                myHttpWebRequest.ContentType = ContentType;
+                myHttpWebRequest.Accept = AcceptEncoding;
                 myHttpWebRequest.UserAgent = UserAgent;
                 myHttpWebRequest.AllowAutoRedirect = true;
                 myHttpWebRequest.Referer = Referer;
@@ -99,6 +104,8 @@ namespace HTMLFetchAndParse
                 myHttpWebRequest.UserAgent = UserAgent;
                 myHttpWebRequest.AllowAutoRedirect = true;
                 myHttpWebRequest.Referer = Referer;
+                myHttpWebRequest.ContentType = ContentType; 
+                
 
                 myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
                 using (var myResponseStream = myHttpWebResponse.GetResponseStream())
@@ -122,8 +129,8 @@ namespace HTMLFetchAndParse
                 myHttpWebRequest.CookieContainer = Cookies;
 
 
-                myHttpWebRequest.ContentType = "application/x-www-form-urlencoded";
-                myHttpWebRequest.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,*//*;q=0.8";
+                myHttpWebRequest.ContentType = ContentType;
+                myHttpWebRequest.Accept = AcceptEncoding;
                 //myHttpWebRequest.UserAgent = UserAgent;
                 myHttpWebRequest.AllowAutoRedirect = true;
                 myHttpWebRequest.Referer = Referer;
@@ -186,8 +193,8 @@ namespace HTMLFetchAndParse
                 myHttpWebRequest.CookieContainer = Cookies;
                 myHttpWebRequest.AllowAutoRedirect = true;
 
-                myHttpWebRequest.ContentType = "application/x-www-form-urlencoded";
-                myHttpWebRequest.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
+                myHttpWebRequest.ContentType = ContentType;
+                myHttpWebRequest.Accept = AcceptEncoding;
                 myHttpWebRequest.UserAgent = UserAgent;
                 myHttpWebRequest.Referer = Referer;
               
@@ -256,8 +263,8 @@ namespace HTMLFetchAndParse
 
                 myHttpWebRequest.Method = "POST";
                 myHttpWebRequest.KeepAlive = true;
-                myHttpWebRequest.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
-                myHttpWebRequest.Accept = "application/json, text/javascript, */*; q=0.01";
+                myHttpWebRequest.ContentType = ContentType;
+                myHttpWebRequest.Accept = AcceptEncoding;
                 myHttpWebRequest.UserAgent = UserAgent;
            //     myHttpWebRequest.Referer = Referer;
                 myHttpWebRequest.ServicePoint.Expect100Continue = false;
@@ -302,9 +309,9 @@ namespace HTMLFetchAndParse
 
                 myHttpWebRequest.Method = "POST";
                 myHttpWebRequest.KeepAlive = true;
-                myHttpWebRequest.ContentType = "application/x-www-form-urlencoded";
-                myHttpWebRequest.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,*//*;q=0.8";
-                myHttpWebRequest.UserAgent = "Mozilla/5.0 (Windows NT 5.1; rv:7.0.1) Gecko/20100101 Firefox/7.0.1";
+                myHttpWebRequest.ContentType = ContentType;
+                myHttpWebRequest.Accept = AcceptEncoding;
+                myHttpWebRequest.UserAgent = UserAgent;
                 myHttpWebRequest.ServicePoint.Expect100Continue = false;
 
                 using (var requestStream = myHttpWebRequest.GetRequestStream())
@@ -336,8 +343,8 @@ namespace HTMLFetchAndParse
 
                 myHttpWebRequest.Method = "POST";
                 myHttpWebRequest.KeepAlive = true;
-                myHttpWebRequest.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
-                myHttpWebRequest.Accept = "application/json, text/javascript, */*; q=0.01";
+                myHttpWebRequest.ContentType = ContentType;
+                myHttpWebRequest.Accept = AcceptEncoding;
                 myHttpWebRequest.UserAgent = UserAgent;
               //  myHttpWebRequest.Referer = Referer;
                 myHttpWebRequest.ServicePoint.Expect100Continue = false;
@@ -379,9 +386,9 @@ namespace HTMLFetchAndParse
 
                 myHttpWebRequest.Method = "POST";
                 myHttpWebRequest.KeepAlive = true;
-                myHttpWebRequest.ContentType = "application/x-www-form-urlencoded";
-                myHttpWebRequest.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,*//*;q=0.8";
-                myHttpWebRequest.UserAgent = "Mozilla/5.0 (Windows NT 5.1; rv:7.0.1) Gecko/20100101 Firefox/7.0.1";
+                myHttpWebRequest.ContentType = ContentType;
+                myHttpWebRequest.Accept = AcceptEncoding;
+                myHttpWebRequest.UserAgent =UserAgent;
                 myHttpWebRequest.ServicePoint.Expect100Continue = false;
 
                 using (var requestStream = myHttpWebRequest.GetRequestStream())
