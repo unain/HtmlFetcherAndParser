@@ -32,7 +32,7 @@ namespace HTMLFetchAndParse
             return null;
         }
 
-        public ICollection<String> ParseHtmlColloctionNodeAttribute(String filename, String xpath, String attribute, String checkXpath, String checkValue)
+        public List<String> ParseHtmlColloctionNodeAttribute(String filename, String xpath, String attribute, String checkXpath, String checkValue)
         {
             List<String> lists = new List<string>();
             HtmlDocument doc = new HtmlDocument();
@@ -62,7 +62,7 @@ namespace HTMLFetchAndParse
         }
 
 
-        public ICollection<String> ParseHtmlColloctionNodeAttribute(string content, string xpath, string attribute, bool isPlainString = false, bool isHtml = false)
+        public List<String> ParseHtmlColloctionNodeAttribute(string content, string xpath, string attribute, bool isPlainString = false, bool isHtml = false)
         {
             List<String> lists = new List<string>();
             HtmlDocument doc = new HtmlDocument();
@@ -87,7 +87,7 @@ namespace HTMLFetchAndParse
             return lists;
         }
 
-        public ICollection<String> ParseHtmlColloctionNodeContent(string filename, string xpath, bool innnerHtml = false, bool isString = false, bool isHtml = false)
+        public List<String> ParseHtmlColloctionNodeContent(string filename, string xpath, bool innnerHtml = false, bool isString = false, bool isHtml = false)
         {
             List<String> lists = new List<string>();
             HtmlDocument doc = new HtmlDocument();
