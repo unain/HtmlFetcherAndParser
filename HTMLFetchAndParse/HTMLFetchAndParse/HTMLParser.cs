@@ -9,65 +9,30 @@ using System.IO;
 
 namespace HTMLFetchAndParse {
     public class HTMLParser {
-        public string ParseHtmlSingleNodeAtrrib(string content, string xpath,
-            string attribute, bool isHTMLContent = true, bool isFilePath = false) {
-            HtmlDocument doc = new HtmlDocument();
-            if (isHTMLContent == true)
-                if (isFilePath == true)
-                    doc.Load(content);
-                else
-                    doc.LoadHtml(content);
+        public string SingleNodeAttribute(string content, string xpath,
+            string attribute, bool isHTML = true, bool isFilePath = false ) {
+            var doc = new HtmlDocument();
+            if (isFilePath)
+                doc.Load(content);
             else
-                doc.LoadHtml(AddHTMLHeader(content));
+                doc.LoadHtml(isHTML ? content : AddHTMLHeader(content));
 
-            //Console.WriteLine(doc.DocumentNode.InnerHtml);
             var tsNode = doc.DocumentNode.SelectSingleNode(xpath);
             if (tsNode != null) {
                 return tsNode.Attributes[attribute].Value;
             }
-
             return null;
         }
 
-        public ICollection<String> ParseHtmlColloctionNodeAttribute(
-            String filename, String xpath, String attribute, String checkXpath, String checkValue) {
+        public ICollection<String> ColloctionNodeAttribute(string content,
+            string xpath, string attribute, bool isHTML = true, bool isFilePath = false) {
 
-            List<String> lists = new List<string>();
-            HtmlDocument doc = new HtmlDocument();
-            doc.Load(filename);
-            // Console.WriteLine(doc.DocumentNode.InnerHtml);
-
-            var tsNodeCollection = doc.DocumentNode.SelectNodes(xpath);
-            if (tsNodeCollection != null) {
-                foreach (var tsNode in tsNodeCollection) {
-                    var CheckNodes = tsNode.SelectNodes(checkXpath);
-                    if (CheckNodes != null) {
-                        foreach (var CheckNode in CheckNodes) {
-                            if (CheckNode != null && CheckNode.InnerText.Contains(checkValue)) {
-                                lists.Add(CheckNode.Attributes[attribute].Value);
-                            }
-                        }
-                    }
-                }
-            }
-
-            return lists;
-        }
-
-
-        public ICollection<String> ParseHtmlColloctionNodeAttribute(string content,
-            string xpath, string attribute, bool isPlainString = false, bool isHtml = false) {
-
-            List<String> lists = new List<string>();
-            HtmlDocument doc = new HtmlDocument();
-            if (isPlainString == false)
-                if (isHtml == false)
-                    doc.Load(content);
-                else
-                    doc.LoadHtml(content);
+            var lists = new List<string>();
+            var doc = new HtmlDocument();
+            if (isFilePath)
+                doc.Load(content);
             else
-                doc.LoadHtml(AddHTMLHeader(content));
-            // Console.WriteLine(doc.DocumentNode.InnerHtml);
+                doc.LoadHtml(isHTML ? content : AddHTMLHeader(content));
 
             var tsNodeCollection = doc.DocumentNode.SelectNodes(xpath);
             if (tsNodeCollection != null) {
@@ -75,48 +40,42 @@ namespace HTMLFetchAndParse {
                     lists.Add(tsNode.Attributes[attribute].Value);
                 }
             }
-
             return lists;
         }
 
-        public ICollection<String> ParseHtmlColloctionNodeContent(
-            string filename, string xpath, bool innnerHtml = false,
-            bool isString = false, bool isHtml = false) {
+        public ICollection<String> ColloctionNodeContent(
+            string content, string xpath, bool extractHtml = false,
+            bool isHTML = true, bool isFilePath = false) {
 
-            List<String> lists = new List<string>();
-            HtmlDocument doc = new HtmlDocument();
-            if (isString == false)
-                if (isHtml == false)
-                    doc.Load(filename);
-                else
-                    doc.LoadHtml(filename);
+            var lists = new List<string>();
+            var doc = new HtmlDocument();
+            if (isFilePath)
+                doc.Load(content);
             else
-                doc.LoadHtml(AddHTMLHeader(filename));
-            // Console.WriteLine(doc.DocumentNode.InnerHtml);
+                doc.LoadHtml(isHTML ? content : AddHTMLHeader(content));
 
             var tsNodeCollection = doc.DocumentNode.SelectNodes(xpath);
             if (tsNodeCollection != null) {
                 foreach (var tsNode in tsNodeCollection) {
-                    if (innnerHtml == true) {
+                    if (extractHtml) {
                         lists.Add(tsNode.OuterHtml);
                     } else
                         lists.Add(tsNode.InnerText);
                 }
             }
-
             return lists;
         }
 
-        public string ParsePattern(string file, string pattern, bool isPath = true) {
+        public string ParsePattern(string content, string pattern, bool isFilePath = true) {
 
-            if (isPath)
-                file = File.ReadAllText(file);
+            if (isFilePath)
+                content = File.ReadAllText(content);
 
-            Match matche = Regex.Match(file.Trim(), pattern, RegexOptions.IgnoreCase);
+            Match matche = Regex.Match(content.Trim(), pattern, RegexOptions.IgnoreCase);
             if (matche.Success) {
                 return matche.Groups[1].Value;
             }
-            return String.Empty;
+            return null;
         }
 
         private string AddHTMLHeader(string str) {
@@ -127,23 +86,18 @@ namespace HTMLFetchAndParse {
             throw new NotImplementedException();
         }
 
-        public string ParseHtmlSingleNodeContent(
-            string p, string xpath, bool isString = false, bool isHtml = false) {
-            HtmlDocument doc = new HtmlDocument();
-            if (isString == false)
-                if (isHtml == false)
-                    doc.Load(p);
-                else
-                    doc.LoadHtml(p);
+        public string SingleNodeContent(
+            string content, string xpath, bool isHTML = true, bool isFilePath = false) {
+            var doc = new HtmlDocument();
+            if (isFilePath)
+                doc.Load(content);
             else
-                doc.LoadHtml(AddHTMLHeader(p));
+                doc.LoadHtml(isHTML ? content : AddHTMLHeader(content));
 
-            //Console.WriteLine(doc.DocumentNode.InnerHtml);
             var tsNode = doc.DocumentNode.SelectSingleNode(xpath);
             if (tsNode != null) {
                 return tsNode.InnerText;
             }
-
             return null;
         }
     }
