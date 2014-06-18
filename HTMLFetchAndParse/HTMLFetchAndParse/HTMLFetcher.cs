@@ -95,8 +95,8 @@ namespace HTMLFetchAndParse {
 
                 myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
                 using (var myResponseStream = myHttpWebResponse.GetResponseStream())
-                using (var myResponseReader = 
-                    new StreamReader(myResponseStream,Encoding.GetEncoding(encodingName))) {
+                using (var myResponseReader =
+                    new StreamReader(myResponseStream, Encoding.GetEncoding(encodingName))) {
 
                     var myResponseResult = myResponseReader.ReadToEnd();
                     //Console.WriteLine(myResponseResult);
@@ -215,8 +215,8 @@ namespace HTMLFetchAndParse {
 
                 myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
                 using (var myResponseStream = myHttpWebResponse.GetResponseStream())
-                using (var myResponseReader = 
-                    new StreamReader(myResponseStream,Encoding.GetEncoding(encodingName))) {
+                using (var myResponseReader =
+                    new StreamReader(myResponseStream, Encoding.GetEncoding(encodingName))) {
                     myResponseResult = myResponseReader.ReadToEnd();
                     //Console.WriteLine(myResponseResult);
                 }
@@ -247,12 +247,12 @@ namespace HTMLFetchAndParse {
 
                 myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
                 using (var myResponseStream = myHttpWebResponse.GetResponseStream())
-                using (var myResponseReader = 
+                using (var myResponseReader =
                     new StreamReader(myResponseStream, Encoding.GetEncoding(encodingName))) {
-                    
+
                     var myResponseResult = myResponseReader.ReadToEnd();
                     //Console.WriteLine(myResponseResult);
-                    StreamWriter sw = new StreamWriter(File.Open(filename, FileMode.Create), 
+                    StreamWriter sw = new StreamWriter(File.Open(filename, FileMode.Create),
                                                        Encoding.GetEncoding("utf-8"));
                     sw.Write(myResponseResult);
                     sw.Close();
@@ -289,12 +289,12 @@ namespace HTMLFetchAndParse {
 
                 myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
                 using (var myResponseStream = myHttpWebResponse.GetResponseStream())
-                using (var myResponseReader = 
+                using (var myResponseReader =
                     new StreamReader(myResponseStream, Encoding.GetEncoding(encodingName))) {
-                    
+
                     var myResponseResult = myResponseReader.ReadToEnd();
                     //Console.WriteLine(myResponseResult);
-                    StreamWriter sw = new StreamWriter(File.Open(filename, FileMode.Create), 
+                    StreamWriter sw = new StreamWriter(File.Open(filename, FileMode.Create),
                                                        Encoding.GetEncoding("utf-8"));
                     sw.Write(myResponseResult);
                     sw.Close();
@@ -324,12 +324,11 @@ namespace HTMLFetchAndParse {
 
                 myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
                 using (var myResponseStream = myHttpWebResponse.GetResponseStream())
-                using (var myResponseReader = 
+                using (var myResponseReader =
                     new StreamReader(myResponseStream, Encoding.GetEncoding(encodingName))) {
                     return myResponseReader.ReadToEnd();
 
                 }
-                myHttpWebResponse.Close();
             } catch (Exception e) {
 
                 Console.WriteLine("Exception Occurs: " + e.Message);
@@ -361,12 +360,11 @@ namespace HTMLFetchAndParse {
 
                 myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
                 using (var myResponseStream = myHttpWebResponse.GetResponseStream())
-                using (var myResponseReader = 
+                using (var myResponseReader =
                     new StreamReader(myResponseStream, Encoding.GetEncoding(encodingName))) {
                     return myResponseReader.ReadToEnd();
 
                 }
-                myHttpWebResponse.Close();
             }
         }
 

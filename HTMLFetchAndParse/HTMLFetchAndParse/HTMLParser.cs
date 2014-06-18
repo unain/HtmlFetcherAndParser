@@ -10,15 +10,15 @@ using System.IO;
 namespace HTMLFetchAndParse {
     public class HTMLParser {
         public string SingleNodeAttribute(string content, string xpath,
-            string attribute, bool isHTML = true, bool isFilePath = false ) {
+            string attribute, bool isHTML = true, bool isFilePath = false) {
             var doc = new HtmlDocument();
             if (isFilePath)
                 doc.Load(content);
             else
-                doc.LoadHtml(isHTML ? content : AddHTMLHeader(content));
+                doc.LoadHtml(isHTML ? content : AddHtmlHeader(content));
 
             var tsNode = doc.DocumentNode.SelectSingleNode(xpath);
-            if (tsNode != null) {
+            if (tsNode != null && tsNode.Attributes[attribute] != null) {
                 return tsNode.Attributes[attribute].Value;
             }
             return null;
@@ -32,7 +32,7 @@ namespace HTMLFetchAndParse {
             if (isFilePath)
                 doc.Load(content);
             else
-                doc.LoadHtml(isHTML ? content : AddHTMLHeader(content));
+                doc.LoadHtml(isHTML ? content : AddHtmlHeader(content));
 
             var tsNodeCollection = doc.DocumentNode.SelectNodes(xpath);
             if (tsNodeCollection != null) {
@@ -52,7 +52,7 @@ namespace HTMLFetchAndParse {
             if (isFilePath)
                 doc.Load(content);
             else
-                doc.LoadHtml(isHTML ? content : AddHTMLHeader(content));
+                doc.LoadHtml(isHTML ? content : AddHtmlHeader(content));
 
             var tsNodeCollection = doc.DocumentNode.SelectNodes(xpath);
             if (tsNodeCollection != null) {
@@ -78,7 +78,20 @@ namespace HTMLFetchAndParse {
             return null;
         }
 
-        private string AddHTMLHeader(string str) {
+        public IDictionary<string, string> ParseFormInputs(string formPart,bool isHTML = false, 
+            bool isFilePath = false) {
+            var dict = new Dictionary<string, string>();
+            var inputs = this.ColloctionNodeContent(formPart, "//input", true, isHTML, isFilePath);
+            foreach (var input in inputs) {
+                var key = this.SingleNodeAttribute(input, "//input", "name", false);
+                var value = this.SingleNodeAttribute(input, "//input", "value", false);
+                if (key != null && value != null)
+                    dict.Add(key, value);
+            }
+            return dict;
+        }
+
+        private string AddHtmlHeader(string str) {
             return string.Format("<html><head></head><body>{0}</body></html>", str);
         }
 
@@ -92,7 +105,7 @@ namespace HTMLFetchAndParse {
             if (isFilePath)
                 doc.Load(content);
             else
-                doc.LoadHtml(isHTML ? content : AddHTMLHeader(content));
+                doc.LoadHtml(isHTML ? content : AddHtmlHeader(content));
 
             var tsNode = doc.DocumentNode.SelectSingleNode(xpath);
             if (tsNode != null) {
