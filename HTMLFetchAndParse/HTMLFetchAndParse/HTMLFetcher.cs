@@ -6,6 +6,7 @@ using System.Net;
 using System.IO;
 using System.Threading;
 using System.Net.NetworkInformation;
+using Newtonsoft.Json.Linq;
 
 namespace HTMLFetchAndParse {
     public class HTMLFetcher {
@@ -38,15 +39,19 @@ namespace HTMLFetchAndParse {
             }
         }
 
-        public void AddCookie(String cookieString, String domain) {
+        public void AddCookieFromJson(string filename) {
             var cookieCollection = new CookieCollection();
-            var cookies = cookieString.Trim().Split(new char[] { ';' },
-                                                    StringSplitOptions.RemoveEmptyEntries);
+            var json = File.ReadAllText(filename);
+            dynamic cookies = JArray.Parse(json);
             foreach(var cookie in cookies) {
-                var datas = cookie.Trim().Split(new char[] { '=' }, 2);
-                cookieCollection.Add(new Cookie(datas[0], datas[1], "/", domain));
+                cookieCollection.Add(new Cookie((string)(cookie.name), (string)(cookie.value),
+                                                (string)(cookie.path), (string)(cookie.domain)));
             }
             Cookies.Add(cookieCollection);
+        }
+
+        public void AddCookie(String cookieString, String domain) {
+            AddCookie(cookieString, domain, "/");
 
         }
 
