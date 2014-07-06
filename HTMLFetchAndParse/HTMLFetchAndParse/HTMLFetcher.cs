@@ -68,7 +68,7 @@ namespace HTMLFetchAndParse {
             Cookies.Add(cookieCollection);
 
         }
-        public void LoadPage(string uri, string filename, string encodingName) {
+        public void LoadPage(string uri, string filename, string encodingName="utf-8") {
             try {
                 myHttpWebRequest = (HttpWebRequest)WebRequest.Create(new Uri(uri));
                 myHttpWebRequest.CookieContainer = Cookies;
@@ -179,7 +179,7 @@ namespace HTMLFetchAndParse {
         }
 
 
-        public String LoadPage(string uri, string encodingName) {
+        public String LoadPage(string uri, string encodingName = "utf-8") {
             String myResponseResult = String.Empty;
             try {
                 myHttpWebRequest = (HttpWebRequest)WebRequest.Create(new Uri(uri));
@@ -244,7 +244,7 @@ namespace HTMLFetchAndParse {
         }
 
 
-        public void PostPage(string uri, string data, string filename, string encodingName) {
+        public void PostPage(string uri, string data, string filename, string encodingName = "utf-8") {
             try {
                 myHttpWebRequest = (HttpWebRequest)WebRequest.Create(new Uri(uri));
                 myHttpWebRequest.CookieContainer = Cookies;
@@ -321,7 +321,7 @@ namespace HTMLFetchAndParse {
             }
         }
 
-        public String PostPage(string uri, string data, string encodingName) {
+        public String PostPage(string uri, string data, string encodingName = "utf-8") {
             try {
                 myHttpWebRequest = (HttpWebRequest)WebRequest.Create(new Uri(uri));
                 myHttpWebRequest.CookieContainer = Cookies;
