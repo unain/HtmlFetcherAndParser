@@ -9,8 +9,10 @@ using System.Net.NetworkInformation;
 using System.Web;
 using Newtonsoft.Json.Linq;
 
-namespace HTMLFetchAndParse {
-    public class HTMLFetcher {
+namespace HTMLFetchAndParse
+{
+    public class HTMLFetcher
+    {
 
         //for load page
         public HttpWebRequest myHttpWebRequest;
@@ -23,53 +25,64 @@ namespace HTMLFetchAndParse {
         public String AcceptEncoding { set; get; }
         Ping pingSender = new Ping();
 
-        public HTMLFetcher() {
+        public HTMLFetcher()
+        {
             Cookies = new CookieContainer(1000, 100, 4096);
             UserAgent = @"Mozilla/5.0 (Windows NT 5.1; rv:7.0.1) Gecko/20100101 Firefox/7.0.1";
             AcceptEncoding = @"text/html,application/xhtml+xml,application/xml;q=0.9,*//*;q=0.8";
             ContentType = @"application/x-www-form-urlencoded; charset=utf-8";
         }
 
-        public void AddCookie(string filename) {
+        public void AddCookie(string filename)
+        {
             var text = File.ReadAllLines(filename);
-            foreach(var line in text) {
+            foreach (var line in text)
+            {
                 var groups = line.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
-                if(groups.Count() > 1) {
+                if (groups.Count() > 1)
+                {
                     AddCookie(groups[1], groups[0]);
                 }
             }
         }
 
-        public void AddCookieFromJson(string filename) {
+        public void AddCookieFromJson(string filename)
+        {
             var cookieCollection = new CookieCollection();
             var json = File.ReadAllText(filename);
             dynamic cookies = JArray.Parse(json);
-            foreach(var cookie in cookies) {
-                cookieCollection.Add(new Cookie((string)(cookie.name), HttpUtility.UrlEncode( 
-                    (string)(cookie.value)),(string)(cookie.path), (string)(cookie.domain)));
+            foreach (var cookie in cookies)
+            {
+                cookieCollection.Add(new Cookie((string)(cookie.name), HttpUtility.UrlEncode(
+                    (string)(cookie.value)), (string)(cookie.path), (string)(cookie.domain)));
             }
             Cookies.Add(cookieCollection);
         }
 
-        public void AddCookie(String cookieString, String domain) {
+        public void AddCookie(String cookieString, String domain)
+        {
             AddCookie(cookieString, domain, "/");
 
         }
 
-        public void AddCookie(String cookieString, String domain, String path) {
+        public void AddCookie(String cookieString, String domain, String path)
+        {
             var cookieCollection = new CookieCollection();
             var cookies = cookieString.Trim().Split(new char[] { ';' },
                                                     StringSplitOptions.RemoveEmptyEntries);
-            foreach(var cookie in cookies) {
+            foreach (var cookie in cookies)
+            {
                 var datas = cookie.Trim().Split(new char[] { '=' }, 2);
-                cookieCollection.Add(new Cookie(datas[0], HttpUtility.UrlEncode(datas[1]), 
+                cookieCollection.Add(new Cookie(datas[0], HttpUtility.UrlEncode(datas[1]),
                     path, domain));
             }
             Cookies.Add(cookieCollection);
 
         }
-        public void LoadPage(string uri, string filename, string encodingName="utf-8") {
-            try {
+        public void LoadPage(string uri, string filename, string encodingName = "utf-8")
+        {
+            try
+            {
                 myHttpWebRequest = (HttpWebRequest)WebRequest.Create(new Uri(uri));
                 myHttpWebRequest.CookieContainer = Cookies;
 
@@ -80,9 +93,10 @@ namespace HTMLFetchAndParse {
                 myHttpWebRequest.Referer = Referer;
 
                 myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
-                using(var myResponseStream = myHttpWebResponse.GetResponseStream())
-                using(var myResponseReader = new StreamReader(myResponseStream,
-                    Encoding.GetEncoding(encodingName))) {
+                using (var myResponseStream = myHttpWebResponse.GetResponseStream())
+                using (var myResponseReader = new StreamReader(myResponseStream,
+                    Encoding.GetEncoding(encodingName)))
+                {
                     var myResponseResult = myResponseReader.ReadToEnd();
                     //Console.WriteLine(myResponseResult);
                     StreamWriter sw = new StreamWriter(
@@ -92,7 +106,9 @@ namespace HTMLFetchAndParse {
                     sw.Close();
                 }
                 myHttpWebResponse.Close();
-            } catch(Exception e) {
+            }
+            catch (Exception e)
+            {
 
                 Console.WriteLine("Exception Occurs: " + e.Message);
 
@@ -100,7 +116,8 @@ namespace HTMLFetchAndParse {
                 byte[] buffer = Encoding.ASCII.GetBytes(datass);
                 int timeout = 120;
                 PingReply reply = pingSender.Send("8.8.8.8", timeout, buffer);
-                while(reply.Status != IPStatus.Success) {
+                while (reply.Status != IPStatus.Success)
+                {
                     reply = pingSender.Send("8.8.8.8", timeout, buffer);
                 }
 
@@ -112,9 +129,10 @@ namespace HTMLFetchAndParse {
                 myHttpWebRequest.ContentType = ContentType;
 
                 myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
-                using(var myResponseStream = myHttpWebResponse.GetResponseStream())
-                using(var myResponseReader =
-                    new StreamReader(myResponseStream, Encoding.GetEncoding(encodingName))) {
+                using (var myResponseStream = myHttpWebResponse.GetResponseStream())
+                using (var myResponseReader =
+                    new StreamReader(myResponseStream, Encoding.GetEncoding(encodingName)))
+                {
 
                     var myResponseResult = myResponseReader.ReadToEnd();
                     //Console.WriteLine(myResponseResult);
@@ -127,8 +145,10 @@ namespace HTMLFetchAndParse {
             }
         }
 
-        public void LoadImage(string uri, string filename) {
-            try {
+        public void LoadImage(string uri, string filename)
+        {
+            try
+            {
                 myHttpWebRequest = (HttpWebRequest)WebRequest.Create(new Uri(uri));
                 myHttpWebRequest.CookieContainer = Cookies;
 
@@ -139,15 +159,19 @@ namespace HTMLFetchAndParse {
                 myHttpWebRequest.Referer = Referer;
 
                 myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
-                using(var myResponseStream = myHttpWebResponse.GetResponseStream())
-                using(var myResponseReader = new BinaryReader(myResponseStream)) {
+                using (var myResponseStream = myHttpWebResponse.GetResponseStream())
+                using (var myResponseReader = new BinaryReader(myResponseStream))
+                {
                     Byte[] lnByte = myResponseReader.ReadBytes(1 * 1024 * 1024 * 10);
-                    using(FileStream lxFS = new FileStream(filename, FileMode.Create)) {
+                    using (FileStream lxFS = new FileStream(filename, FileMode.Create))
+                    {
                         lxFS.Write(lnByte, 0, lnByte.Length);
                     }
                 }
                 myHttpWebResponse.Close();
-            } catch(Exception e) {
+            }
+            catch (Exception e)
+            {
 
                 Console.WriteLine("Exception Occurs: " + e.Message);
 
@@ -156,7 +180,8 @@ namespace HTMLFetchAndParse {
                 byte[] buffer = Encoding.ASCII.GetBytes(datass);
                 int timeout = 120;
                 PingReply reply = pingSender.Send("8.8.8.8", timeout, buffer);
-                while(reply.Status != IPStatus.Success) {
+                while (reply.Status != IPStatus.Success)
+                {
                     reply = pingSender.Send("8.8.8.8", timeout, buffer);
                 }
 
@@ -167,10 +192,12 @@ namespace HTMLFetchAndParse {
                 myHttpWebRequest.Referer = Referer;
 
                 myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
-                using(var myResponseStream = myHttpWebResponse.GetResponseStream())
-                using(var myResponseReader = new BinaryReader(myResponseStream)) {
+                using (var myResponseStream = myHttpWebResponse.GetResponseStream())
+                using (var myResponseReader = new BinaryReader(myResponseStream))
+                {
                     Byte[] lnByte = myResponseReader.ReadBytes(1 * 1024 * 1024 * 10);
-                    using(FileStream lxFS = new FileStream(filename, FileMode.Create)) {
+                    using (FileStream lxFS = new FileStream(filename, FileMode.Create))
+                    {
                         lxFS.Write(lnByte, 0, lnByte.Length);
                     }
                 }
@@ -179,9 +206,11 @@ namespace HTMLFetchAndParse {
         }
 
 
-        public String LoadPage(string uri, string encodingName = "utf-8") {
+        public String LoadPage(string uri, string encodingName = "utf-8")
+        {
             String myResponseResult = String.Empty;
-            try {
+            try
+            {
                 myHttpWebRequest = (HttpWebRequest)WebRequest.Create(new Uri(uri));
                 myHttpWebRequest.CookieContainer = Cookies;
                 myHttpWebRequest.AllowAutoRedirect = true;
@@ -198,16 +227,19 @@ namespace HTMLFetchAndParse {
 
                 //}
 
-                using(var myResponseStream = myHttpWebResponse.GetResponseStream())
-                using(var myResponseReader = new StreamReader(myResponseStream,
-                    Encoding.GetEncoding(encodingName))) {
+                using (var myResponseStream = myHttpWebResponse.GetResponseStream())
+                using (var myResponseReader = new StreamReader(myResponseStream,
+                    Encoding.GetEncoding(encodingName)))
+                {
                     myResponseResult = myResponseReader.ReadToEnd();
                     //Console.WriteLine(myResponseResult);
                 }
                 myHttpWebResponse.Close();
                 return myResponseResult;
 
-            } catch(Exception e) {
+            }
+            catch (Exception e)
+            {
 
                 Console.WriteLine("Exception Occurs: " + e.Message);
                 // Console.WriteLine("Uri : " + uri);
@@ -220,7 +252,8 @@ namespace HTMLFetchAndParse {
                 byte[] buffer = Encoding.ASCII.GetBytes(data);
                 int timeout = 120;
                 PingReply reply = pingSender.Send("8.8.8.8", timeout, buffer);
-                while(reply.Status != IPStatus.Success) {
+                while (reply.Status != IPStatus.Success)
+                {
                     reply = pingSender.Send("8.8.8.8", timeout, buffer);
                 }
 
@@ -232,9 +265,10 @@ namespace HTMLFetchAndParse {
                 myHttpWebRequest.AllowAutoRedirect = true;
 
                 myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
-                using(var myResponseStream = myHttpWebResponse.GetResponseStream())
-                using(var myResponseReader =
-                    new StreamReader(myResponseStream, Encoding.GetEncoding(encodingName))) {
+                using (var myResponseStream = myHttpWebResponse.GetResponseStream())
+                using (var myResponseReader =
+                    new StreamReader(myResponseStream, Encoding.GetEncoding(encodingName)))
+                {
                     myResponseResult = myResponseReader.ReadToEnd();
                     //Console.WriteLine(myResponseResult);
                 }
@@ -244,8 +278,10 @@ namespace HTMLFetchAndParse {
         }
 
 
-        public void PostPage(string uri, string data, string filename, string encodingName = "utf-8") {
-            try {
+        public void PostPage(string uri, string data, string filename, string encodingName = "utf-8")
+        {
+            try
+            {
                 myHttpWebRequest = (HttpWebRequest)WebRequest.Create(new Uri(uri));
                 myHttpWebRequest.CookieContainer = Cookies;
 
@@ -258,15 +294,17 @@ namespace HTMLFetchAndParse {
                 myHttpWebRequest.ServicePoint.Expect100Continue = false;
                 myHttpWebRequest.AllowAutoRedirect = true;
 
-                using(var requestStream = myHttpWebRequest.GetRequestStream())
-                using(var writer = new StreamWriter(requestStream)) {
+                using (var requestStream = myHttpWebRequest.GetRequestStream())
+                using (var writer = new StreamWriter(requestStream))
+                {
                     writer.Write(data);
                 }
 
                 myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
-                using(var myResponseStream = myHttpWebResponse.GetResponseStream())
-                using(var myResponseReader =
-                    new StreamReader(myResponseStream, Encoding.GetEncoding(encodingName))) {
+                using (var myResponseStream = myHttpWebResponse.GetResponseStream())
+                using (var myResponseReader =
+                    new StreamReader(myResponseStream, Encoding.GetEncoding(encodingName)))
+                {
 
                     var myResponseResult = myResponseReader.ReadToEnd();
                     //Console.WriteLine(myResponseResult);
@@ -276,7 +314,9 @@ namespace HTMLFetchAndParse {
                     sw.Close();
                 }
                 myHttpWebResponse.Close();
-            } catch(Exception e) {
+            }
+            catch (Exception e)
+            {
 
                 Console.WriteLine("Exception Occurs: " + e.Message);
                 // Console.WriteLine("Uri : " + uri);
@@ -284,7 +324,8 @@ namespace HTMLFetchAndParse {
                 byte[] buffer = Encoding.ASCII.GetBytes(datass);
                 int timeout = 120;
                 PingReply reply = pingSender.Send("8.8.8.8", timeout, buffer);
-                while(reply.Status != IPStatus.Success) {
+                while (reply.Status != IPStatus.Success)
+                {
                     reply = pingSender.Send("8.8.8.8", timeout, buffer);
                 }
 
@@ -300,15 +341,17 @@ namespace HTMLFetchAndParse {
                 myHttpWebRequest.UserAgent = UserAgent;
                 myHttpWebRequest.ServicePoint.Expect100Continue = false;
 
-                using(var requestStream = myHttpWebRequest.GetRequestStream())
-                using(var writer = new StreamWriter(requestStream)) {
+                using (var requestStream = myHttpWebRequest.GetRequestStream())
+                using (var writer = new StreamWriter(requestStream))
+                {
                     writer.Write(data);
                 }
 
                 myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
-                using(var myResponseStream = myHttpWebResponse.GetResponseStream())
-                using(var myResponseReader =
-                    new StreamReader(myResponseStream, Encoding.GetEncoding(encodingName))) {
+                using (var myResponseStream = myHttpWebResponse.GetResponseStream())
+                using (var myResponseReader =
+                    new StreamReader(myResponseStream, Encoding.GetEncoding(encodingName)))
+                {
 
                     var myResponseResult = myResponseReader.ReadToEnd();
                     //Console.WriteLine(myResponseResult);
@@ -321,8 +364,10 @@ namespace HTMLFetchAndParse {
             }
         }
 
-        public String PostPage(string uri, string data, string encodingName = "utf-8") {
-            try {
+        public String PostPage(string uri, string data,  string encodingName = "utf-8",bool usingAjax = false)
+        {
+            try
+            {
                 myHttpWebRequest = (HttpWebRequest)WebRequest.Create(new Uri(uri));
                 myHttpWebRequest.CookieContainer = Cookies;
 
@@ -331,23 +376,30 @@ namespace HTMLFetchAndParse {
                 myHttpWebRequest.ContentType = ContentType;
                 myHttpWebRequest.Accept = AcceptEncoding;
                 myHttpWebRequest.UserAgent = UserAgent;
-                //  myHttpWebRequest.Referer = Referer;
+                myHttpWebRequest.Referer = Referer;
                 myHttpWebRequest.ServicePoint.Expect100Continue = false;
                 myHttpWebRequest.AllowAutoRedirect = true;
-
-                using(var requestStream = myHttpWebRequest.GetRequestStream())
-                using(var writer = new StreamWriter(requestStream)) {
+                if (usingAjax == true)
+                {
+                    myHttpWebRequest.Headers.Add("X-Requested-With", "XMLHttpRequest");
+                }
+                using (var requestStream = myHttpWebRequest.GetRequestStream())
+                using (var writer = new StreamWriter(requestStream))
+                {
                     writer.Write(data);
                 }
 
                 myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
-                using(var myResponseStream = myHttpWebResponse.GetResponseStream())
-                using(var myResponseReader =
-                    new StreamReader(myResponseStream, Encoding.GetEncoding(encodingName))) {
+                using (var myResponseStream = myHttpWebResponse.GetResponseStream())
+                using (var myResponseReader =
+                    new StreamReader(myResponseStream, Encoding.GetEncoding(encodingName)))
+                {
                     return myResponseReader.ReadToEnd();
 
                 }
-            } catch(Exception e) {
+            }
+            catch (Exception e)
+            {
 
                 Console.WriteLine("Exception Occurs: " + e.Message);
                 //   Console.WriteLine("Uri : " + uri);
@@ -355,7 +407,8 @@ namespace HTMLFetchAndParse {
                 byte[] buffer = Encoding.ASCII.GetBytes(datass);
                 int timeout = 120;
                 PingReply reply = pingSender.Send("8.8.8.8", timeout, buffer);
-                while(reply.Status != IPStatus.Success) {
+                while (reply.Status != IPStatus.Success)
+                {
                     reply = pingSender.Send("8.8.8.8", timeout, buffer);
                 }
 
@@ -371,15 +424,17 @@ namespace HTMLFetchAndParse {
                 myHttpWebRequest.UserAgent = UserAgent;
                 myHttpWebRequest.ServicePoint.Expect100Continue = false;
 
-                using(var requestStream = myHttpWebRequest.GetRequestStream())
-                using(var writer = new StreamWriter(requestStream)) {
+                using (var requestStream = myHttpWebRequest.GetRequestStream())
+                using (var writer = new StreamWriter(requestStream))
+                {
                     writer.Write(data);
                 }
 
                 myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
-                using(var myResponseStream = myHttpWebResponse.GetResponseStream())
-                using(var myResponseReader =
-                    new StreamReader(myResponseStream, Encoding.GetEncoding(encodingName))) {
+                using (var myResponseStream = myHttpWebResponse.GetResponseStream())
+                using (var myResponseReader =
+                    new StreamReader(myResponseStream, Encoding.GetEncoding(encodingName)))
+                {
                     return myResponseReader.ReadToEnd();
 
                 }
