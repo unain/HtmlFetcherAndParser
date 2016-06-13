@@ -389,13 +389,27 @@ namespace HTMLFetchAndParse
                     writer.Write(data);
                 }
 
-                myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
-                using (var myResponseStream = myHttpWebResponse.GetResponseStream())
-                using (var myResponseReader =
-                    new StreamReader(myResponseStream, Encoding.GetEncoding(encodingName)))
+                try
                 {
-                    return myResponseReader.ReadToEnd();
+                    myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
+                    using (var myResponseStream = myHttpWebResponse.GetResponseStream())
+                    using (var myResponseReader =
+                        new StreamReader(myResponseStream, Encoding.GetEncoding(encodingName)))
+                    {
+                        return myResponseReader.ReadToEnd();
 
+                    }
+                }
+                catch (WebException E)
+                {
+                    myHttpWebResponse = E.Response as HttpWebResponse; ;
+                    using (var myResponseStream = myHttpWebResponse.GetResponseStream())
+                    using (var myResponseReader =
+                        new StreamReader(myResponseStream, Encoding.GetEncoding(encodingName)))
+                    {
+                        return myResponseReader.ReadToEnd();
+
+                    }
                 }
             }
             catch (Exception e)
@@ -429,14 +443,27 @@ namespace HTMLFetchAndParse
                 {
                     writer.Write(data);
                 }
-
-                myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
-                using (var myResponseStream = myHttpWebResponse.GetResponseStream())
-                using (var myResponseReader =
-                    new StreamReader(myResponseStream, Encoding.GetEncoding(encodingName)))
+                try
                 {
-                    return myResponseReader.ReadToEnd();
+                    myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
+                    using (var myResponseStream = myHttpWebResponse.GetResponseStream())
+                    using (var myResponseReader =
+                        new StreamReader(myResponseStream, Encoding.GetEncoding(encodingName)))
+                    {
+                        return myResponseReader.ReadToEnd();
 
+                    }
+                }
+                catch (WebException E)
+                {
+                    myHttpWebResponse = E.Response as HttpWebResponse; ;
+                    using (var myResponseStream = myHttpWebResponse.GetResponseStream())
+                    using (var myResponseReader =
+                        new StreamReader(myResponseStream, Encoding.GetEncoding(encodingName)))
+                    {
+                        return myResponseReader.ReadToEnd();
+
+                    }
                 }
             }
         }
