@@ -53,8 +53,13 @@ namespace HTMLFetchAndParse
             dynamic cookies = JArray.Parse(json);
             foreach (var cookie in cookies)
             {
-                cookieCollection.Add(new Cookie((string)(cookie.name), HttpUtility.UrlEncode(
-                    (string)(cookie.value)), (string)(cookie.path), (string)(cookie.domain)));
+                string value = Convert.ToString(cookie.value);
+                if (value.Contains(","))
+                    cookieCollection.Add(new Cookie((string)(cookie.name), HttpUtility.UrlEncode(
+                        value), (string)(cookie.path), (string)(cookie.domain)));
+                else
+                    cookieCollection.Add(new Cookie((string)(cookie.name),
+                    value, (string)(cookie.path), (string)(cookie.domain)));
             }
             Cookies.Add(cookieCollection);
         }
@@ -290,7 +295,7 @@ namespace HTMLFetchAndParse
                 myHttpWebRequest.ContentType = ContentType;
                 myHttpWebRequest.Accept = AcceptEncoding;
                 myHttpWebRequest.UserAgent = UserAgent;
-                //     myHttpWebRequest.Referer = Referer;
+                myHttpWebRequest.Referer = Referer;
                 myHttpWebRequest.ServicePoint.Expect100Continue = false;
                 myHttpWebRequest.AllowAutoRedirect = true;
 
@@ -364,7 +369,7 @@ namespace HTMLFetchAndParse
             }
         }
 
-        public String PostPage(string uri, string data,  string encodingName = "utf-8",bool usingAjax = false)
+        public String PostPage(string uri, string data, string encodingName = "utf-8", bool usingAjax = false)
         {
             try
             {
